@@ -46,9 +46,11 @@ count = 0
 for _, event in latest_attempts.values():
     if event.get("status") == "success":
         try:
-            total += Decimal(str(event["amount"]))
+            # Some amounts are strings formatted with thousands separators.
+            amount = Decimal(str(event["amount"]).replace(",", ""))
         except (KeyError, TypeError, ValueError):
             continue
+        total += amount
         count += 1
 
 with open("expected.txt", "r", encoding="utf-8") as f:
